@@ -76,15 +76,19 @@ public class Trial {
 		String[] alfabeto = automata.get(1).split(",");
 		String[] aceptacion = automata.get(2).split(",");
 		int[][] quintupla = new int[estados][alfabeto.length];
+		
+		//Tiene que haber estados de aceptación
 		if(aceptacion.length == 0)
 			return false;
 		
+		//Los estados de aceptación no pueden ser mayores que los estados
 		if(aceptacion.length > estados)
 			return false;
-		
+		//La longitud de la quintupla no puede ser mayor que el alfabeto
 		if(alfabeto.length != quintupla[0].length)
 			return false;
 		
+		//Para recorrer cada elemento del arrraylist
 		for (var arreglo : automata)
 		{
 			if(quintu<=2)
@@ -99,9 +103,11 @@ public class Trial {
 				f++;
 			}
 		}
+		//De izquierda a derecha la longitd del arreglo
 		if(quintupla[0].length != alfabeto.length)
 			return false;
-		if(quintupla.length != alfabeto.length)
+		//De arriba abajo la longitud del arreglo
+		if(quintupla.length != estados)
 			return false;
 		
 		return true;
@@ -163,11 +169,19 @@ public class Trial {
 						if(archivo.getName().endsWith("txt"))
 						{
 							ArrayList<String> documento = AbrirArchivo(archivo);
-							AnalizarAutomata(documento);
+							if(AnalizarAutomata(documento))
+							{								
 							int [][] quinta = quintupla(documento);
 							reductorARD reducto = new reductorARD();
 							rect = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
-							System.out.println(documento);
+							}
+							else
+							{
+								System.out.print("AUTOMATA NO VALIDO");
+							}
+						for(var item: rect) {
+							System.out.println(item);
+						}
 							//textPane.setText(documento);
 						}else {
 							JOptionPane.showMessageDialog(null, "Archivo no compatible");
