@@ -1,6 +1,7 @@
 package trial;
 
 import java.awt.EventQueue;
+import java.awt.Window.Type;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -190,7 +191,19 @@ public class Trial {
 				}
 			}
 		});
-		btnOpen.setBounds(132, 200, 187, 25);
+		
+		//
+					//ab //3
+		/*		___a____b______
+		 * 		|  1    2
+		 *    q2|  2    2
+		 * 		|  2    3
+		 * 		|
+		 * 		|
+		 */		
+		 
+		
+		btnOpen.setBounds(12, 201, 196, 25);
 		frame.getContentPane().add(btnOpen);
 		
 		JTextPane txtpnDsadadasd = new JTextPane();
@@ -202,10 +215,16 @@ public class Trial {
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
+				String a  = String.valueOf(e.getKeyChar());
+				String b;
 				boolean flag = false;
 				for(var item : abc)
-					if(e.getKeyChar() == item.charAt(0))
-						flag = true;
+				{
+					b = item;
+						if(a.equals(b)) {
+							flag = true;
+						}
+				}
 				if(flag == false)
 				{
 					textField.setText(null);
@@ -223,6 +242,22 @@ public class Trial {
 		frame.getContentPane().add(textField);
 		textField.setBounds(12, 12, 196, 132);
 		textField.setColumns(10);
+		
+		JButton btnAnalizar = new JButton("Analizar ");
+		btnAnalizar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(archivo == null)
+					System.out.print("NO SE HA CARGADO NINGÚN AUTOMATA");
+				String palabra = textField.getText();
+				ArrayList<String> cadena = new ArrayList<String>();
+				for(int i=1; i<palabra.length()-1; i++)
+					cadena.add(String.valueOf(palabra.charAt(i+1)));
+				reductorARD reducto = new reductorARD();
+				System.out.println(reducto.analizarAutomata(abc, rect, cadena, rect.get(0).split("_").length));
+			}
+		});
+		btnAnalizar.setBounds(232, 201, 206, 25);
+		frame.getContentPane().add(btnAnalizar);
 	}
-
 }
