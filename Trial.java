@@ -39,31 +39,31 @@ public class Trial {
 	 * Launch the application.
 	 */
 	//Método auxiliar robado de mi trabajao anterior para poder abrir archivos txt jeje
-	private int[][] quintupla(ArrayList<String> automata)
+	private int[][] transiciones(ArrayList<String> automata)
 	{
 		int estados = Integer.parseInt(automata.get(0).trim());
 		String[] alfabeto = automata.get(1).trim().split(",");
-		int quintu = 0;
+		int iteradorr = 0;
 		int f =0;
-		int[][] quintupla = new int[estados][alfabeto.length];
+		int[][] transiciones = new int[estados][alfabeto.length];
 		for (var arreglo : automata)
 		{
-			if(quintu==1)
+			if(iteradorr==1)
 				for(int i = 0; i<alfabeto.length; i++)
 					abc.add(alfabeto[i]);
-			if(quintu<=2)
-				quintu++;
+			if(iteradorr<=2)
+				iteradorr++;
 			else
 			{
 				if(!arreglo.isEmpty())
 				{					
 						for(int j = 0; j< alfabeto.length; j++)
-							quintupla[f][j] = Integer.parseInt(arreglo.split("(\\s)")[j]);
+							transiciones[f][j] = Integer.parseInt(arreglo.split("(\\s)")[j]);
 				}
 				f++;
 			}
 		}
-		return quintupla;
+		return transiciones;
 	}
 	
 	private boolean AnalizarAutomata(ArrayList<String> automata)
@@ -72,59 +72,56 @@ public class Trial {
 		//2. Alfabeto ejemplo: 1,2... "a", "b" separado por comas
 		//3. Se omite q0
 		//3. Los estados de aceptación ejemplo: 1,3
-		//4. Quintupla
-		int quintu = 0;
+		//4. transiciones
+		int iteradorr = 0;
 		int f =0;
 		int estados = Integer.parseInt(automata.get(0).trim());
 		String[] alfabeto = automata.get(1).trim().split(",");
+		if(automata.get(2).split(",").length == 1)
+			automata.add(2, "");
 		String[] aceptacion = automata.get(2).trim().split(",");
-	
-		int[][] quintupla = new int[estados][alfabeto.length];
+		int[][] transiciones = new int[estados][alfabeto.length];
 		
 		for(int i=0;i<aceptacion.length;i++) 
 			estadosDeAceptacion.add(aceptacion[i]);
-			
 		
-
+		for(var item: estadosDeAceptacion)
+			if(Integer.parseInt(item) >= estados)
+				return false;
 		
 		//Tiene que haber estados de aceptación
 		if(aceptacion.length == 0)
 			return false;
 		
-		//Los estados de aceptación no pueden ser mayores que los estados
-
-		//Tiene que haber estados de aceptaciÃ³n
-		if(aceptacion.length == 0)
-			return false;
 		
 		//Los estados de aceptaciÃ³n no pueden ser mayores que los estados
 
 		if(aceptacion.length > estados)
 			return false;
-		//La longitud de la quintupla no puede ser mayor que el alfabeto
-		if(alfabeto.length != quintupla[0].length)
+		//La longitud de la transiciones no puede ser mayor que el alfabeto
+		if(alfabeto.length != transiciones[0].length)
 			return false;
 		
 		//Para recorrer cada elemento del arrraylist
 		for (var arreglo : automata)
 		{
-			if(quintu<=2)
-			quintu++;
+			if(iteradorr<=2)
+			iteradorr++;
 			else
 			{
 				if(!arreglo.isEmpty())
 				{					
 						for(int j = 0; j< alfabeto.length; j++)
-							quintupla[f][j] = Integer.parseInt(arreglo.split("(\\s)")[j]);
+							transiciones[f][j] = Integer.parseInt(arreglo.split("(\\s)")[j]);
 				}
 				f++;
 			}
 		}
 		//De izquierda a derecha la longitd del arreglo
-		if(quintupla[0].length != alfabeto.length)
+		if(transiciones[0].length != alfabeto.length)
 			return false;
 		//De arriba abajo la longitud del arreglo
-		if(quintupla.length != estados)
+		if(transiciones.length != estados)
 			return false;
 		
 		return true;
@@ -191,7 +188,7 @@ public class Trial {
 							
 							if(AnalizarAutomata(documento))
 							{								
-							int [][] quinta = quintupla(documento);
+							int [][] quinta = transiciones(documento);
 							reductorARD reducto = new reductorARD();
 
 							autoReducido = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
@@ -282,7 +279,7 @@ public class Trial {
 				
 				reductorARD reducto = new reductorARD();
 				boolean flag=false;
-				String estadoFinal=reducto.analizarAutomataNoReducido(abc, quintupla(documento),cadena);
+				String estadoFinal=reducto.analizarAutomataNoReducido(abc, transiciones(documento),cadena);
 				System.out.println("la cadena finalizo en el estado: Q"+estadoFinal);
 				 txtpnDsadadasd.setText("la cadena finalizo en el estado: Q"+estadoFinal+"\n");
 			System.out.println("el cual es un estado de ");
