@@ -39,6 +39,22 @@ public class Trial {
 	 * Launch the application.
 	 */
 	//Método auxiliar robado de mi trabajao anterior para poder abrir archivos txt jeje
+	
+	public static boolean isNumeric(String cadena) {
+
+        boolean resultado;
+
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+ 
+	
 	private int[][] transiciones(ArrayList<String> automata)
 	{
 		int estados = Integer.parseInt(automata.get(0).trim());
@@ -75,10 +91,13 @@ public class Trial {
 		//4. transiciones
 		int iteradorr = 0;
 		int f =0;
+		
+		if(!isNumeric(automata.get(0).trim()))
+			return false;
+		
 		int estados = Integer.parseInt(automata.get(0).trim());
 		String[] alfabeto = automata.get(1).trim().split(",");
-		if(automata.get(2).split(",").length == 1)
-			automata.add(2, "");
+		
 		String[] aceptacion = automata.get(2).trim().split(",");
 		int[][] transiciones = new int[estados][alfabeto.length];
 		
