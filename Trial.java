@@ -195,19 +195,17 @@ public class Trial {
 							reductorARD reducto = new reductorARD();
 
 							autoReducido = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
-
+							for(var item: autoReducido)
+								if(item.split(",")[1].equals("true"))
+									System.out.println(item.split(",")[0] + " Este renglón representa el estado de aceptación");
+								else
+									System.out.println(item.split(",")[0]);
 						
 							}
 							else
 							{
 								System.out.print("AUTOMATA NO VALIDO");
 							}
-
-						for(var item: autoReducido) {
-
-						
-							System.out.println(item);
-						}
 							//textPane.setText(documento);
 						}else {
 							JOptionPane.showMessageDialog(null, "Archivo no compatible");
