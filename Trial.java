@@ -24,23 +24,25 @@ import java.awt.event.KeyEvent;
 
 public class Trial {
 
+	
 	JFileChooser seleccionar = new JFileChooser();
 	File archivo;
 	FileInputStream entrada;
 	private JFrame frame;
 	private JTextField textField;
-	ArrayList<String> abc= new  ArrayList<String>();
-	ArrayList<String> rect= new  ArrayList<String>();
+	ArrayList<String> abc= new  ArrayList<String>();//abecedario
+	ArrayList<String> autoReducido= new  ArrayList<String>();
 	ArrayList<String> rect1= new  ArrayList<String>();
-
+	ArrayList<String> documento;
+	ArrayList<String> estadosDeAceptacion= new ArrayList<String>();
 	/**
 	 * Launch the application.
 	 */
 	//Método auxiliar robado de mi trabajao anterior para poder abrir archivos txt jeje
 	private int[][] quintupla(ArrayList<String> automata)
 	{
-		int estados = Integer.parseInt(automata.get(0));
-		String[] alfabeto = automata.get(1).split(",");
+		int estados = Integer.parseInt(automata.get(0).trim());
+		String[] alfabeto = automata.get(1).trim().split(",");
 		int quintu = 0;
 		int f =0;
 		int[][] quintupla = new int[estados][alfabeto.length];
@@ -73,16 +75,30 @@ public class Trial {
 		//4. Quintupla
 		int quintu = 0;
 		int f =0;
-		int estados = Integer.parseInt(automata.get(0));
-		String[] alfabeto = automata.get(1).split(",");
-		String[] aceptacion = automata.get(2).split(",");
+		int estados = Integer.parseInt(automata.get(0).trim());
+		String[] alfabeto = automata.get(1).trim().split(",");
+		String[] aceptacion = automata.get(2).trim().split(",");
+	
 		int[][] quintupla = new int[estados][alfabeto.length];
+		
+		for(int i=0;i<aceptacion.length;i++) 
+			estadosDeAceptacion.add(aceptacion[i]);
+			
+		
+
 		
 		//Tiene que haber estados de aceptación
 		if(aceptacion.length == 0)
 			return false;
 		
 		//Los estados de aceptación no pueden ser mayores que los estados
+
+		//Tiene que haber estados de aceptaciÃ³n
+		if(aceptacion.length == 0)
+			return false;
+		
+		//Los estados de aceptaciÃ³n no pueden ser mayores que los estados
+
 		if(aceptacion.length > estados)
 			return false;
 		//La longitud de la quintupla no puede ser mayor que el alfabeto
@@ -169,18 +185,27 @@ public class Trial {
 					{
 						if(archivo.getName().endsWith("txt"))
 						{
-							ArrayList<String> documento = AbrirArchivo(archivo);
+
+							 documento = AbrirArchivo(archivo);
+
+							
 							if(AnalizarAutomata(documento))
 							{								
 							int [][] quinta = quintupla(documento);
 							reductorARD reducto = new reductorARD();
-							rect = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
+
+							autoReducido = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
+
+						
 							}
 							else
 							{
 								System.out.print("AUTOMATA NO VALIDO");
 							}
-						for(var item: rect) {
+
+						for(var item: autoReducido) {
+
+						
 							System.out.println(item);
 						}
 							//textPane.setText(documento);
@@ -248,13 +273,38 @@ public class Trial {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(archivo == null)
+
 					System.out.print("NO SE HA CARGADO NINGÚN AUTOMATA");
+
+
 				String palabra = textField.getText();
 				ArrayList<String> cadena = new ArrayList<String>();
-				for(int i=1; i<palabra.length()-1; i++)
-					cadena.add(String.valueOf(palabra.charAt(i+1)));
+				for(int i=0; i<palabra.length(); i++)
+					cadena.add(String.valueOf(palabra.charAt(i)));
+				
 				reductorARD reducto = new reductorARD();
-				System.out.println(reducto.analizarAutomata(abc, rect, cadena, rect.get(0).split("_").length));
+				boolean flag=false;
+				String estadoFinal=reducto.analizarAutomataNoReducido(abc, quintupla(documento),cadena);
+				System.out.println("la cadena finalizo en el estado: Q"+estadoFinal);
+				 txtpnDsadadasd.setText("la cadena finalizo en el estado: Q"+estadoFinal+"\n");
+			System.out.println("el cual es un estado de ");
+			txtpnDsadadasd.setText(txtpnDsadadasd.getText()+"el cual es un estado de \n" );
+			for(var item: estadosDeAceptacion) {
+			
+				if(item.equals(estadoFinal)) {
+					flag=true;
+				}
+			}
+			if(flag==true) {
+				System.out.println("ACEPTACION");
+				txtpnDsadadasd.setText(txtpnDsadadasd.getText()+"ACEPTACION");
+			}
+			else {
+				System.out.println("NO ACEPTACION");
+				txtpnDsadadasd.setText(txtpnDsadadasd.getText()+"NO ACEPTACION");
+				
+			}
+
 			}
 		});
 		btnAnalizar.setBounds(232, 201, 206, 25);
