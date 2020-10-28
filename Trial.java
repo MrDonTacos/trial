@@ -43,7 +43,6 @@ public class Trial {
 	public static boolean isNumeric(String cadena) {
 
         boolean resultado;
-
         try {
             Integer.parseInt(cadena);
             resultado = true;
@@ -186,48 +185,39 @@ public class Trial {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 563, 473);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
-		JButton btnOpen = new JButton("Abrir Automata");
+		JTextPane minimizarAutomata = new JTextPane();
+		JButton btnOpen = new JButton("Reducir Automata");
+		btnOpen.setEnabled(false);
 		btnOpen.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(seleccionar.showDialog(null, "Abrir")==JFileChooser.APPROVE_OPTION)
-				{
-					archivo = seleccionar.getSelectedFile();
-					if(archivo.canRead())
-					{
-						if(archivo.getName().endsWith("txt"))
-						{
-
-							 documento = AbrirArchivo(archivo);
-
-							
-							if(AnalizarAutomata(documento))
-							{								
+			public void mouseClicked(MouseEvent e) {			
 							int [][] quinta = transiciones(documento);
 							reductorARD reducto = new reductorARD();
-
+							int estados = 0;
+							ArrayList<Integer> EstadosAceptacion = new ArrayList<Integer>();
+							ArrayList<String> Transiciones = new ArrayList<String>();
 							autoReducido = reducto.ReductorAFD(quinta, documento.get(2).split(","), Integer.parseInt(documento.get(0)));
 							for(var item: autoReducido)
-								if(item.split(",")[1].equals("true"))
-									System.out.println(item.split(",")[0] + " Este renglón representa el estado de aceptación");
-								else
-									System.out.println(item.split(",")[0]);
-						
-							}
-							else
-							{
-								System.out.print("AUTOMATA NO VALIDO");
+							{								
+								if(item.split(",")[1].equals("true"))	
+									EstadosAceptacion.add(estados);
+								
+								Transiciones.add(item.split(",")[0].split("_")[0] + " " +item.split(",")[0].split("_")[1]);
+								estados++;
 							}
 							//textPane.setText(documento);
-						}else {
-							JOptionPane.showMessageDialog(null, "Archivo no compatible");
-						}
-					}
-				}
+							minimizarAutomata.setText(minimizarAutomata.getText() + estados + "\n");
+							for(var item : abc)
+								minimizarAutomata.setText(minimizarAutomata.getText() + item + ",");
+							minimizarAutomata.setText(minimizarAutomata.getText() + "\n");
+							for(var aceptacion: EstadosAceptacion)
+								minimizarAutomata.setText(minimizarAutomata.getText() + aceptacion + ",");
+							minimizarAutomata.setText(minimizarAutomata.getText() + "\n");
+							for(var trans: Transiciones)
+								minimizarAutomata.setText(minimizarAutomata.getText() + trans + "\n");
 			}
 		});
 		
@@ -242,12 +232,11 @@ public class Trial {
 		 */		
 		 
 		
-		btnOpen.setBounds(12, 201, 196, 25);
+		btnOpen.setBounds(232, 156, 206, 25);
 		frame.getContentPane().add(btnOpen);
-		
 		JTextPane txtpnDsadadasd = new JTextPane();
 		txtpnDsadadasd.setEditable(false);
-		txtpnDsadadasd.setBounds(232, 12, 206, 132);
+		txtpnDsadadasd.setBounds(232, 195, 206, 132);
 		frame.getContentPane().add(txtpnDsadadasd);
 		
 		textField = new JTextField();
@@ -283,6 +272,7 @@ public class Trial {
 		textField.setColumns(10);
 		
 		JButton btnAnalizar = new JButton("Analizar ");
+		btnAnalizar.setEnabled(false);
 		btnAnalizar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -300,7 +290,7 @@ public class Trial {
 				boolean flag=false;
 				String estadoFinal=reducto.analizarAutomataNoReducido(abc, transiciones(documento),cadena);
 				System.out.println("la cadena finalizo en el estado: Q"+estadoFinal);
-				 txtpnDsadadasd.setText("la cadena finalizo en el estado: Q"+estadoFinal+"\n");
+				txtpnDsadadasd.setText("la cadena finalizo en el estado: Q"+estadoFinal+"\n");
 			System.out.println("el cual es un estado de ");
 			txtpnDsadadasd.setText(txtpnDsadadasd.getText()+"el cual es un estado de \n" );
 			for(var item: estadosDeAceptacion) {
@@ -321,7 +311,46 @@ public class Trial {
 
 			}
 		});
-		btnAnalizar.setBounds(232, 201, 206, 25);
+		btnAnalizar.setBounds(232, 359, 206, 25);
 		frame.getContentPane().add(btnAnalizar);
+		
+		
+		minimizarAutomata.setEditable(false);
+		minimizarAutomata.setBounds(232, 12, 206, 132);
+		frame.getContentPane().add(minimizarAutomata);
+		
+		JButton btnReducirAutomata = new JButton("Abrir Automata");
+		btnReducirAutomata.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(seleccionar.showDialog(null, "Abrir")==JFileChooser.APPROVE_OPTION)
+				{
+					archivo = seleccionar.getSelectedFile();
+					if(archivo.canRead())
+					{
+						if(archivo.getName().endsWith("txt"))
+						{
+							 documento = AbrirArchivo(archivo);
+							 if(AnalizarAutomata(documento))
+								{
+								 btnOpen.setEnabled(true);
+								 btnAnalizar.setEnabled(true);
+								}
+								else
+								{
+									System.out.print("AUTOMATA NO VALIDO");
+									btnOpen.setEnabled(false);
+									btnAnalizar.setEnabled(false);
+								}
+						}else {
+							JOptionPane.showMessageDialog(null, "Archivo no compatible");
+						}
+					}
+				}
+							
+			}
+		});
+		btnReducirAutomata.setBounds(12, 156, 196, 25);
+		frame.getContentPane().add(btnReducirAutomata);
 	}
 }
